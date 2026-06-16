@@ -18,5 +18,4 @@ class TeamCreate(TeamBase):
 class TeamRead(TeamBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

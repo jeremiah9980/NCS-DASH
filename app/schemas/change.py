@@ -11,8 +11,7 @@ class ChangeRead(BaseModel):
     change_type: ChangeType
     change_time: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class AgentQuery(BaseModel):

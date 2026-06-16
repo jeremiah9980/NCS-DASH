@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,10 +6,18 @@ from app.config import settings
 from app.database import init_db
 from app.routers import teams, search, agent
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
 app = FastAPI(
     title="NCS Dashboard API",
     description="API for NCS fastpitch roster monitoring and search",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -22,11 +31,6 @@ app.add_middleware(
 app.include_router(teams.router)
 app.include_router(search.router)
 app.include_router(agent.router)
-
-
-@app.on_event("startup")
-def startup():
-    init_db()
 
 
 @app.get("/health")

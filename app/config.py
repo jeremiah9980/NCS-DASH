@@ -24,8 +24,7 @@ class Settings(BaseSettings):
     def cities_list(self) -> List[str]:
         return [c.strip() for c in self.monitored_cities.split(",")]
 
-    class Config:
-        env_file = ".env"
+    model_config = {"env_file": ".env"}
 
 
 settings = Settings()

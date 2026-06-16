@@ -32,7 +32,7 @@ def agent_query(query: AgentQuery, db: Session = Depends(get_db)) -> Dict[str, A
             team_q = team_q.filter(Team.city.ilike(f"%{query.city}%"))
         team_ids = [r[0] for r in team_q.all()]
         if not team_ids:
-            return {"results": [], "message": "No teams matched the query."}
+            return {"query": query.model_dump(), "count": 0, "results": [], "message": "No teams matched the query."}
         filters.append(Change.team_id.in_(team_ids))
 
     if query.player:
@@ -41,7 +41,7 @@ def agent_query(query: AgentQuery, db: Session = Depends(get_db)) -> Dict[str, A
             for r in db.query(Player.id).filter(Player.name.ilike(f"%{query.player}%")).all()
         ]
         if not player_ids:
-            return {"results": [], "message": "No players matched the query."}
+            return {"query": query.model_dump(), "count": 0, "results": [], "message": "No players matched the query."}
         filters.append(Change.player_id.in_(player_ids))
 
     if query.date_from:
