@@ -1,0 +1,25 @@
+name: Scheduled Scraper
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"   # every 4 hours
+  workflow_dispatch:          # allow manual trigger
+
+jobs:
+  scrape:
+    name: Run NCS Scraper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m scraper.ncs_scraper
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          NCS_SEED_EVENT_IDS: ${{ secrets.NCS_SEED_EVENT_IDS }}
+          MONITORED_DIVISIONS: "10U,12U"
+          MONITORED_CITIES: "Austin,Cedar Park,Round Rock,Georgetown,Pflugerville,Leander,Kyle,Buda"
