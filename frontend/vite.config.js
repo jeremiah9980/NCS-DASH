@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig({
+// Base path matches the GitHub Pages project subpath: https://<user>.github.io/NCS-DASH/
+export default defineConfig(({ command }) => ({
   plugins: [react()],
+  base: command === 'build' ? '/NCS-DASH/' : '/',
   server: {
     proxy: {
       '/api': {
@@ -12,4 +14,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

@@ -112,11 +112,25 @@ pytest tests/ -v
 
 ## Deployment
 
-### Serverless (recommended)
+### Frontend — GitHub Pages
 
-Deploy the FastAPI app to **AWS Lambda** via [Mangum](https://mangum.io/) or to **Railway / Render** as a Docker container. Set `DATABASE_URL` to a PostgreSQL connection string for production.
+The frontend auto-deploys to GitHub Pages on every push to `main` that touches `frontend/**`, via `.github/workflows/deploy-pages.yml`. The live site is:
 
-### Docker (self-hosted)
+> **https://jeremiah9980.github.io/NCS-DASH/**
+
+One-time setup:
+
+1. In repo **Settings → Pages**, set **Source** to **GitHub Actions**.
+2. In repo **Settings → Secrets and variables → Actions → Variables**, add a repository variable named `VITE_API_URL` pointing at your deployed backend (e.g. `https://ncs-dash-api.onrender.com`). Without this, the deployed site has no backend to call.
+3. Push to `main` (or run the workflow manually via **Actions → Deploy Frontend to GitHub Pages → Run workflow**).
+
+Because GitHub Pages only serves static files, routing uses `HashRouter` (URLs look like `.../#/teams/3`) so deep links and refreshes work without server-side rewrites.
+
+### Backend — Serverless (recommended)
+
+Deploy the FastAPI app to **AWS Lambda** via [Mangum](https://mangum.io/) or to **Railway / Render** as a Docker container. Set `DATABASE_URL` to a PostgreSQL connection string for production, and configure `CORS_ORIGINS` to include `https://jeremiah9980.github.io`.
+
+### Backend — Docker (self-hosted)
 
 ```bash
 docker build -t ncs-dash .
