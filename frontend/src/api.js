@@ -1,6 +1,11 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: '/api' })
+// In dev, Vite proxies /api to localhost:8000 (see vite.config.js).
+// In production (GitHub Pages), there is no proxy, so the deployed backend
+// URL must be supplied at build time via VITE_API_URL.
+const baseURL = import.meta.env.VITE_API_URL || '/api'
+
+const api = axios.create({ baseURL })
 
 export const getTeams = (params) => api.get('/teams', { params }).then(r => r.data)
 export const getTeam = (id) => api.get(`/teams/${id}`).then(r => r.data)
